@@ -1,2 +1,6 @@
-/target
-/lib
+*
+!src/**
+!*.rs
+!*.toml
+!.gitignore
+Cargo.lock

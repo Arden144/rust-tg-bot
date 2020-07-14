@@ -3,11 +3,11 @@ use std::ffi::{CStr, CString};
 
 #[link(name = "tdjson")]
 extern "C" {
-    fn td_json_client_create() -> *mut c_void;
-    fn td_json_client_send(client: *mut c_void, request: *const c_char) -> c_void;
-    fn td_json_client_receive(client: *mut c_void, timeout: c_double) -> *const c_char;
-    fn td_json_client_execute(client: *mut c_void, request: *const c_char) -> *const c_char;
-    fn td_json_client_destroy(client: *mut c_void) -> c_void;
+    fn td_json_client_create() -> *const c_void;
+    fn td_json_client_send(client: *const c_void, request: *const c_char) -> c_void;
+    fn td_json_client_receive(client: *const c_void, timeout: c_double) -> *const c_char;
+    fn td_json_client_execute(client: *const c_void, request: *const c_char) -> *const c_char;
+    fn td_json_client_destroy(client: *const c_void) -> c_void;
     fn td_set_log_file_path(file_path: *const c_char) -> c_int;
     fn td_set_log_max_file_size(max_file_size: c_longlong) -> c_void;
     fn td_set_log_verbosity_level(new_verbosity_level: c_int) -> c_void;
@@ -22,7 +22,7 @@ impl std::fmt::Display for NoResponseError {
 }
 
 pub struct Tdlib {
-    client: *mut c_void,
+    client: *const c_void,
 }
 
 impl Drop for Tdlib {
@@ -38,7 +38,7 @@ impl Tdlib {
     pub fn new() -> Self {
         let client_pointer = unsafe { td_json_client_create() };
         Self {
-            client: unsafe { &mut*client_pointer }
+            client: unsafe { &*client_pointer }
         }
     }
     pub fn send(&self, request: &str) {
